@@ -282,6 +282,9 @@ impl AsyncRunner {
             DataEvent::FundingRate(funding_rate) => {
                 msgbus::send_any(MessagingSwitchboard::data_engine_process(), &funding_rate);
             }
+            DataEvent::OptionGreeks(greeks) => {
+                msgbus::send_any(MessagingSwitchboard::data_engine_process(), &greeks);
+            }
             #[cfg(feature = "defi")]
             DataEvent::DeFi(data) => {
                 msgbus::send_defi_data(MessagingSwitchboard::data_engine_process_defi_data(), data);
