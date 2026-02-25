@@ -63,6 +63,11 @@
 #[cfg(feature = "arrow")]
 pub mod arrow;
 
+/// Re-export custom data registration for use by persistence and tests.
+pub use arrow::custom::ensure_custom_data_registered;
+/// Re-export MsgPack serialization helpers for consumers expecting to configure codecs via this crate.
+pub use nautilus_core::serialization::msgpack;
+
 #[cfg(feature = "capnp")]
 pub mod capnp;
 
