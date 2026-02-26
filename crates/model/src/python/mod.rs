@@ -81,6 +81,23 @@ pub fn model(_: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<crate::data::trade::TradeTick>()?;
     m.add_class::<crate::data::close::InstrumentClose>()?;
     m.add_class::<crate::data::funding::FundingRateUpdate>()?;
+    m.add_class::<crate::data::greeks::BlackScholesGreeksResult>()?;
+    m.add_function(wrap_pyfunction!(
+        crate::python::data::greeks::py_black_scholes_greeks,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        crate::python::data::greeks::py_imply_vol,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        crate::python::data::greeks::py_imply_vol_and_greeks,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        crate::python::data::greeks::py_refine_vol_and_greeks,
+        m
+    )?)?;
     // Enums
     m.add_class::<crate::enums::AccountType>()?;
     m.add_class::<crate::enums::AggregationSource>()?;

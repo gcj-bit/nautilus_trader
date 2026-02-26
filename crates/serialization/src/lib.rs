@@ -74,9 +74,6 @@ pub mod capnp;
 #[cfg(feature = "sbe")]
 pub mod sbe;
 
-/// Re-export MsgPack serialization helpers for consumers expecting to configure codecs via this crate.
-pub use nautilus_core::serialization::msgpack;
-
 #[cfg(feature = "capnp")]
 macro_rules! include_capnp_module {
     ($name:ident, $path:expr) => {

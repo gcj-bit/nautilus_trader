@@ -58,7 +58,7 @@ use nautilus_model::defi::{Block, Pool, PoolFeeCollect, PoolFlash, PoolLiquidity
 use nautilus_model::{
     data::{
         Bar, FundingRateUpdate, IndexPriceUpdate, MarkPriceUpdate, OrderBookDeltas,
-        OrderBookDepth10, QuoteTick, TradeTick,
+        OrderBookDepth10, QuoteTick, TradeTick, greeks::GreeksData,
     },
     events::{AccountState, OrderEventAny, PositionEvent},
     orderbook::OrderBook,
@@ -78,8 +78,6 @@ pub use self::{
     },
     typed_router::{TopicRouter, TypedSubscription},
 };
-#[cfg(feature = "greeks")]
-use crate::greeks::GreeksData;
 
 /// Inline capacity for handler buffers before heap allocation.
 pub(super) const HANDLER_BUFFER_CAP: usize = 64;
@@ -116,7 +114,6 @@ thread_local! {
         RefCell::new(SmallVec::new());
     pub(super) static FUNDING_RATE_HANDLERS: RefCell<SmallVec<[TypedHandler<FundingRateUpdate>; HANDLER_BUFFER_CAP]>> =
         RefCell::new(SmallVec::new());
-    #[cfg(feature = "greeks")]
     pub(super) static GREEKS_HANDLERS: RefCell<SmallVec<[TypedHandler<GreeksData>; HANDLER_BUFFER_CAP]>> =
         RefCell::new(SmallVec::new());
     pub(super) static ACCOUNT_STATE_HANDLERS: RefCell<SmallVec<[TypedHandler<AccountState>; HANDLER_BUFFER_CAP]>> =

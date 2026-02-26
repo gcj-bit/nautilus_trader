@@ -97,7 +97,7 @@ use nautilus_core::{UUID4, correctness::FAILED};
 use nautilus_model::{
     data::{
         Bar, Data, FundingRateUpdate, IndexPriceUpdate, MarkPriceUpdate, OrderBookDeltas,
-        OrderBookDepth10, QuoteTick, TradeTick,
+        OrderBookDepth10, QuoteTick, TradeTick, greeks::GreeksData,
     },
     events::{AccountState, OrderEventAny, PositionEvent},
     identifiers::TraderId,
@@ -117,8 +117,6 @@ use super::{
     typed_endpoints::{EndpointMap, IntoEndpointMap},
     typed_router::TopicRouter,
 };
-#[cfg(feature = "greeks")]
-use crate::greeks::GreeksData;
 use crate::messages::{
     data::{DataCommand, DataResponse},
     execution::{ExecutionReport, TradingCommand},
@@ -240,7 +238,6 @@ pub struct MessageBus {
     pub(crate) router_account_state: TopicRouter<AccountState>,
     pub(crate) router_orders: TopicRouter<OrderAny>,
     pub(crate) router_positions: TopicRouter<Position>,
-    #[cfg(feature = "greeks")]
     pub(crate) router_greeks: TopicRouter<GreeksData>,
     #[cfg(feature = "defi")]
     pub(crate) router_defi_blocks: TopicRouter<nautilus_model::defi::Block>, // nautilus-import-ok
@@ -310,7 +307,6 @@ impl MessageBus {
             router_account_state: TopicRouter::new(),
             router_orders: TopicRouter::new(),
             router_positions: TopicRouter::new(),
-            #[cfg(feature = "greeks")]
             router_greeks: TopicRouter::new(),
             #[cfg(feature = "defi")]
             router_defi_blocks: TopicRouter::new(),

@@ -24,6 +24,7 @@ pub mod delta;
 pub mod deltas;
 pub mod depth;
 pub mod funding;
+pub mod greeks;
 pub mod order;
 pub mod prices;
 pub mod quote;

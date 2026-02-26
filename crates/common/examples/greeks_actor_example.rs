@@ -25,11 +25,14 @@ use nautilus_common::{
     actor::data_actor::{DataActor, DataActorConfig, DataActorCore},
     cache::Cache,
     component::Component,
-    greeks::{GreeksCalculator, GreeksData, PortfolioGreeks},
+    greeks::GreeksCalculator,
     live::clock::LiveClock,
 };
 use nautilus_model::{
-    data::CustomData,
+    data::{
+        CustomData,
+        greeks::{GreeksData, PortfolioGreeks},
+    },
     enums::PositionSide,
     identifiers::{InstrumentId, TraderId},
 };

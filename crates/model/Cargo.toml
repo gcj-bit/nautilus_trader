@@ -50,6 +50,7 @@ derive_builder = { workspace = true }
 enum_dispatch = { workspace = true }
 evalexpr = { workspace = true }
 hex = { workspace = true }
+implied-vol = { workspace = true }
 indexmap = { workspace = true }
 log = { workspace = true }
 rust_decimal = { workspace = true }
@@ -75,6 +76,16 @@ rstest = { workspace = true }
 
 [build-dependencies]
 cbindgen = { workspace = true, optional = true }
+
+[[bench]]
+name = "greeks_criterion"
+path = "benches/greeks_criterion.rs"
+harness = false
+
+[[bench]]
+name = "black_scholes_simd_criterion"
+path = "benches/black_scholes_simd_criterion.rs"
+harness = false
 
 [[bench]]
 name = "book_iai"

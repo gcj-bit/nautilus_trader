@@ -13,15 +13,14 @@
 //  limitations under the License.
 // -------------------------------------------------------------------------------------------------
 
-//! Python bindings for Greeks (Black-Scholes result and functions).
-
 use pyo3::prelude::*;
 
-use crate::greeks::data::{
+use crate::data::greeks::{
     BlackScholesGreeksResult, black_scholes_greeks, imply_vol, imply_vol_and_greeks,
     refine_vol_and_greeks,
 };
 
+#[cfg(feature = "python")]
 #[pymethods]
 impl BlackScholesGreeksResult {
     #[getter]
@@ -67,8 +66,7 @@ impl BlackScholesGreeksResult {
 /// Returns a `PyErr` if the greeks calculation fails.
 #[pyfunction]
 #[pyo3(name = "black_scholes_greeks")]
-#[pyo3(signature = (s, r, b, vol, is_call, k, t, multiplier=1.0))]
-#[allow(clippy::too_many_arguments, unused_variables)]
+#[allow(clippy::too_many_arguments)]
 pub fn py_black_scholes_greeks(
     s: f64,
     r: f64,
@@ -77,7 +75,6 @@ pub fn py_black_scholes_greeks(
     is_call: bool,
     k: f64,
     t: f64,
-    multiplier: f64,
 ) -> PyResult<BlackScholesGreeksResult> {
     Ok(black_scholes_greeks(s, r, b, vol, is_call, k, t))
 }
@@ -98,7 +95,8 @@ pub fn py_imply_vol(
     t: f64,
     price: f64,
 ) -> PyResult<f64> {
-    Ok(imply_vol(s, r, b, is_call, k, t, price))
+    let vol = imply_vol(s, r, b, is_call, k, t, price);
+    Ok(vol)
 }
 
 /// Computes implied volatility and option greeks for given parameters and market price.
