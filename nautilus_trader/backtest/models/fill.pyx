@@ -101,6 +101,18 @@ cdef class FillModel:
         """
         return self._event_success(self.prob_slippage)
 
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        # Default: only marketable is fillable; no extra callback logic.
+        return False
+
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
         Instrument instrument,
@@ -157,6 +169,26 @@ cdef class BestPriceFillModel(FillModel):
     immediately at the best available price. Ideal for testing basic strategy logic.
 
     """
+
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        # Limit order is fillable when priced at or inside the bid-ask spread.
+        if price is None:
+            return False
+
+        if side == OrderSide.BUY:
+            return is_bid_initialized and price._mem.raw >= bid_raw
+        elif side == OrderSide.SELL:
+            return is_ask_initialized and price._mem.raw <= ask_raw
+
+        return False
 
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
@@ -280,6 +312,26 @@ cdef class TwoTierFillModel(FillModel):
     of basic market impact for small to medium orders.
     """
 
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        # Limit fillable when at or inside spread (liquidity at best in simulated book).
+        if price is None:
+            return False
+
+        if side == OrderSide.BUY:
+            return is_bid_initialized and price._mem.raw >= bid_raw
+        elif side == OrderSide.SELL:
+            return is_ask_initialized and price._mem.raw <= ask_raw
+
+        return False
+
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
         Instrument instrument,
@@ -350,6 +402,25 @@ cdef class ProbabilisticFillModel(FillModel):
 
     """
 
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        if price is None:
+            return False
+
+        if side == OrderSide.BUY:
+            return is_bid_initialized and price._mem.raw >= bid_raw
+        elif side == OrderSide.SELL:
+            return is_ask_initialized and price._mem.raw <= ask_raw
+
+        return False
+
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
         Instrument instrument,
@@ -415,6 +486,25 @@ cdef class SizeAwareFillModel(FillModel):
     impact with partial fills at worse prices.
 
     """
+
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        if price is None:
+            return False
+
+        if side == OrderSide.BUY:
+            return is_bid_initialized and price._mem.raw >= bid_raw
+        elif side == OrderSide.SELL:
+            return is_ask_initialized and price._mem.raw <= ask_raw
+
+        return False
 
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
@@ -512,6 +602,25 @@ cdef class LimitOrderPartialFillModel(FillModel):
 
     """
 
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        if price is None:
+            return False
+
+        if side == OrderSide.BUY:
+            return is_bid_initialized and price._mem.raw >= bid_raw
+        elif side == OrderSide.SELL:
+            return is_ask_initialized and price._mem.raw <= ask_raw
+
+        return False
+
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
         Instrument instrument,
@@ -582,6 +691,25 @@ cdef class ThreeTierFillModel(FillModel):
     - 20 contracts 2 ticks worse
 
     """
+
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        if price is None:
+            return False
+
+        if side == OrderSide.BUY:
+            return is_bid_initialized and price._mem.raw >= bid_raw
+        elif side == OrderSide.SELL:
+            return is_ask_initialized and price._mem.raw <= ask_raw
+
+        return False
 
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
@@ -695,6 +823,25 @@ cdef class MarketHoursFillModel(FillModel):
         """
         self._is_low_liquidity = is_low_liquidity
 
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        if price is None:
+            return False
+
+        if side == OrderSide.BUY:
+            return is_bid_initialized and price._mem.raw >= bid_raw
+        elif side == OrderSide.SELL:
+            return is_ask_initialized and price._mem.raw <= ask_raw
+
+        return False
+
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
         Instrument instrument,
@@ -776,6 +923,25 @@ cdef class VolumeSensitiveFillModel(FillModel):
         """
         self._recent_volume = volume
 
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        if price is None:
+            return False
+
+        if side == OrderSide.BUY:
+            return is_bid_initialized and price._mem.raw >= bid_raw
+        elif side == OrderSide.SELL:
+            return is_ask_initialized and price._mem.raw <= ask_raw
+
+        return False
+
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
         Instrument instrument,
@@ -856,6 +1022,25 @@ cdef class CompetitionAwareFillModel(FillModel):
     ):
         super().__init__(prob_fill_on_limit, prob_slippage, random_seed)
         self.liquidity_factor = liquidity_factor
+
+    cpdef bint is_limit_fillable(
+        self,
+        OrderSide side,
+        Price price,
+        long bid_raw,
+        long ask_raw,
+        bint is_bid_initialized,
+        bint is_ask_initialized,
+    ):
+        if price is None:
+            return False
+
+        if side == OrderSide.BUY:
+            return is_bid_initialized and price._mem.raw >= bid_raw
+        elif side == OrderSide.SELL:
+            return is_ask_initialized and price._mem.raw <= ask_raw
+
+        return False
 
     cpdef OrderBook get_orderbook_for_fill_simulation(
         self,
